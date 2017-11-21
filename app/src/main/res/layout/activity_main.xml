@@ -7,13 +7,41 @@
     tools:context="com.poturno.vitor.passwordsafe.activity.MainActivity"
     android:layout_margin="10dp">
 
+    <ImageView
+        android:id="@+id/btn_back"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_arrow_back"
+        android:tint="@color/colorPrimary" />
+
     <TextView
+        android:id="@+id/txt_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:id="@+id/txt_teste"/>
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:id="@+id/btn_refresh"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/ic_refresh"
+        android:tint="@color/colorPrimary" />
+
+    <Button
+        android:id="@+id/btn_add_key"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Add key"
+        android:theme="@style/btnPattern" />
+
+    <ListView
+        android:id="@+id/list_key"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/btn_back"
+        android:layout_above="@id/btn_add_key"></ListView>
 
 </RelativeLayout>

@@ -10,9 +10,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.poturno.vitor.passwordsafe.R;
-import com.poturno.vitor.passwordsafe.controler.Auth;
+import com.poturno.vitor.passwordsafe.controler.AuthController;
 import com.poturno.vitor.passwordsafe.helper.Base64Custom;
 import com.poturno.vitor.passwordsafe.model.User;
+import com.poturno.vitor.passwordsafe.security.Hash;
 
 public class SignupActivity extends AppCompatActivity {
 
@@ -23,7 +24,7 @@ public class SignupActivity extends AppCompatActivity {
     private Button signup;
     private ImageView back;
     private User user;
-    private Auth auth;
+    private AuthController auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,12 +59,17 @@ public class SignupActivity extends AppCompatActivity {
                     Toast.makeText(SignupActivity.this,"Todos os campos sao obrigatorios",Toast.LENGTH_LONG).show();
                 }else {
                     if (password0Value.equals(password1Value)){
-                        auth = new Auth();
+                        auth = new AuthController();
                         user = new User();
                         user.setId(Base64Custom.encodeBase64(emailValue));
                         user.setName(nameValue);
                         user.setEmail(emailValue);
-                        user.setPassword(password0Value);
+                        try {
+                            user.setPassword(Hash.getHash(password0Value));
+                        }catch (Exception e){
+
+                        }
+
                         auth.addUser(user, SignupActivity.this);
                     }else {
                         Toast.makeText(SignupActivity.this,"As senhas devem ser iguais",Toast.LENGTH_LONG).show();

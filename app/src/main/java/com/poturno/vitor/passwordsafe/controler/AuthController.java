@@ -20,19 +20,27 @@ import java.util.Random;
  * Created by vitor on 18/11/2017.
  */
 
-public class Auth {
+public class AuthController {
 
     private UserDatabase userDatabase;
+    private LogController logController;
 
-    public void authenticate(String email, final String password, final Activity activity){
+    public void authenticate(final String email, final String password, final Activity activity){
         userDatabase = new UserDatabase();
         userDatabase.getUser(Base64Custom.encodeBase64(email), new IUserListener() {
             @Override
             public void onSucces(User user) {
+                logController = new LogController();
                 if(user!=null && user.getPassword().equals(password)){
                     openMain(user.getId(),user.getName(),user.getPassword(),activity);
+                    logController.loginSuccess(user.getId());
                 }else {
                     Toast.makeText(activity,"Email ou senha invalidos",Toast.LENGTH_LONG).show();
+                    if (user!=null){
+                        logController.loginfailed(user.getId());
+                    }else{
+                        logController.loginEmailNotFound(email);
+                    }
                 }
             }
 
@@ -49,12 +57,15 @@ public class Auth {
         userDatabase.getUser(newUser.getId(), new IUserListener() {
             @Override
             public void onSucces(User user) {
+                logController = new LogController();
                 if(user==null){
                     newUser.setToken(Integer.toString(Math.abs(new Random().nextInt())));
                     userDatabase.setUser(newUser);
+                    logController.addUser(newUser.getId());
                     showToken(newUser.getToken(), activity);
                 }else{
                     Toast.makeText(activity,"Usuario ja cadastrado",Toast.LENGTH_LONG).show();
+                    logController.errorAddUser(newUser.getId());
                 }
             }
 
@@ -70,13 +81,23 @@ public class Auth {
         userDatabase.getUser(Base64Custom.encodeBase64(newUser.getEmail()), new IUserListener() {
             @Override
             public void onSucces(User user) {
+                logController = new LogController();
                 if(user!=null && user.getToken().equals(newUser.getToken())){
                     //recuperar keys
                     newUser.setName(user.getName());
                     userDatabase.setUser(newUser);
                     showRecoverConfirm(newUser.getToken(),activity);
+                    //log mudanca de senha
+                    logController.recoverSuccess(user.getId());
                 }else {
                     Toast.makeText(activity,"Email ou token invalidos",Toast.LENGTH_LONG).show();
+                    // tentativa de mudanca de senha
+                    if(user!=null){
+                        logController.revoverFailed(user.getId());
+                    }else {
+                        logController.recoverEmailNotfound(newUser.getEmail());
+                    }
+
                 }
             }
 
@@ -128,7 +149,7 @@ public class Auth {
         Intent intent = new Intent(activity, MainActivity.class);
         intent.putExtra("id",id);
         intent.putExtra("name",name);
-        intent.putExtra("password",password);
+        intent.putExtra("hash",password);
         activity.startActivity(intent);
         activity.finish();
     }

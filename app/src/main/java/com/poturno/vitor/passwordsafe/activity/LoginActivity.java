@@ -1,5 +1,6 @@
 package com.poturno.vitor.passwordsafe.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,10 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.poturno.vitor.passwordsafe.R;
-import com.poturno.vitor.passwordsafe.controler.Auth;
-import com.poturno.vitor.passwordsafe.model.User;
-
-import java.security.PrivateKey;
+import com.poturno.vitor.passwordsafe.controler.AuthController;
+import com.poturno.vitor.passwordsafe.security.Hash;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -22,7 +21,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button login;
     private TextView signup;
     private TextView forgot;
-    private Auth auth;
+    private AuthController auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +37,15 @@ public class LoginActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(email.getText().toString().isEmpty()||
-                        password.getText().toString().isEmpty()){
+                if(email.getText().toString().isEmpty()|| password.getText().toString().isEmpty()){
                     Toast.makeText(LoginActivity.this,"Email ou senha invalidos",Toast.LENGTH_LONG).show();
                 }else {
-                    auth = new Auth();
-                    auth.authenticate(email.getText().toString(), password.getText().toString(), LoginActivity.this);
+                    auth = new AuthController();
+                    try {
+                        auth.authenticate(email.getText().toString(), Hash.getHash(password.getText().toString()), LoginActivity.this);
+                    }catch (Exception e){
+
+                    }
                 }
             }
         });
@@ -51,26 +53,20 @@ public class LoginActivity extends AppCompatActivity {
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openSignup();
+                openActivity(SignupActivity.class);
             }
         });
 
         forgot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openRecover();
+                openActivity(RecoverActivity.class);
             }
         });
     }
 
-    private void openSignup(){
-        Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    private void openRecover(){
-        Intent intent = new Intent(LoginActivity.this, RecoverActivity.class);
+    private void openActivity(Class activity){
+        Intent intent = new Intent(LoginActivity.this, activity);
         startActivity(intent);
         finish();
     }

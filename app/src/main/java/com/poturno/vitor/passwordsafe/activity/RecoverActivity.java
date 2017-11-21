@@ -10,9 +10,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.poturno.vitor.passwordsafe.R;
-import com.poturno.vitor.passwordsafe.controler.Auth;
+import com.poturno.vitor.passwordsafe.controler.AuthController;
 import com.poturno.vitor.passwordsafe.helper.Base64Custom;
 import com.poturno.vitor.passwordsafe.model.User;
+import com.poturno.vitor.passwordsafe.security.Hash;
 
 public class RecoverActivity extends AppCompatActivity {
 
@@ -22,7 +23,7 @@ public class RecoverActivity extends AppCompatActivity {
     private EditText password1;
     private Button recover;
     private ImageView back;
-    private Auth auth;
+    private AuthController auth;
     private User user;
 
     @Override
@@ -51,12 +52,16 @@ public class RecoverActivity extends AppCompatActivity {
                     Toast.makeText(RecoverActivity.this,"Todos os campos sao obrigatorios",Toast.LENGTH_LONG).show();
                 }else {
                     if (password0Value.equals(password1Value)){
-                        auth = new Auth();
+                        auth = new AuthController();
                         user = new User();
                         user.setId(Base64Custom.encodeBase64(emailValue));
                         user.setToken(tokenValue);
                         user.setEmail(emailValue);
-                        user.setPassword(password0Value);
+                        try {
+                            user.setPassword(Hash.getHash(password0Value));
+                        }catch (Exception e){
+
+                        }
                         auth.recover(user, RecoverActivity.this);
                     }else {
                         Toast.makeText(RecoverActivity.this,"As senhas devem ser iguais",Toast.LENGTH_LONG).show();
