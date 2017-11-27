@@ -47,12 +47,17 @@ public class LogController {
         logDatabase.addLog(userId,mensage);
     }
 
-    public void loginfailed(String userId){
+    public void loginFailed(String userId){
         logDatabase = new LogDatabase();
         mensage = "loginFailed: " + getDate();
         logDatabase.addLog(userId,mensage);
     }
 
+    public void logout(String userId){
+        logDatabase = new LogDatabase();
+        mensage = "logout: " + getDate();
+        logDatabase.addLog(userId,mensage);
+    }
     public void loginEmailNotFound(String email){
         logDatabase = new LogDatabase();
         mensage = "loginEmailNotFound: " + email + getDate();
@@ -76,6 +81,8 @@ public class LogController {
         mensage = "recoverEmailNotFound: " + email + getDate();
         logDatabase.addLog("notFound",mensage);
     }
+
+
 
     private String getDate(){
         SimpleDateFormat dateFormat = new SimpleDateFormat(" 'on' yyyy.MM.dd 'at' HH.mm.ss 'GTM 'Z");

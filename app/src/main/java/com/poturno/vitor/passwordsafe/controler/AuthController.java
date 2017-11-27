@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.poturno.vitor.passwordsafe.R;
@@ -48,7 +47,7 @@ public class AuthController {
                 }else {
                     Toast.makeText(activity,"Email ou senha invalidos",Toast.LENGTH_LONG).show();
                     if (user!=null){
-                        logController.loginfailed(user.getId());
+                        logController.loginFailed(user.getId());
                     }else{
                         logController.loginEmailNotFound(email);
                     }
