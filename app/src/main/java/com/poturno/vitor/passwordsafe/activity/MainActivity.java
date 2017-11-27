@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.poturno.vitor.passwordsafe.R;
 import com.poturno.vitor.passwordsafe.adapter.KeysAdapter;
+import com.poturno.vitor.passwordsafe.controler.LogController;
 import com.poturno.vitor.passwordsafe.controler.UserKeysController;
 import com.poturno.vitor.passwordsafe.database.IEventListener;
 import com.poturno.vitor.passwordsafe.database.IKeysListener;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private UserKeysController userKeys;
     private String userId;
     private String hash;
+    private LogController logController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +131,13 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        logController = new LogController();
+        logController.logout(userId);
     }
 
     private void refreshKeys(){

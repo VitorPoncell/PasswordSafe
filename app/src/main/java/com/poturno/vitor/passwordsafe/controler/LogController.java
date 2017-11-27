@@ -47,6 +47,12 @@ public class LogController {
         logDatabase.addLog(userId,mensage);
     }
 
+    public void logout(String userId){
+        logDatabase = new LogDatabase();
+        mensage = "logout: " + getDate();
+        logDatabase.addLog(userId,mensage);
+    }
+
     public void loginfailed(String userId){
         logDatabase = new LogDatabase();
         mensage = "loginFailed: " + getDate();
