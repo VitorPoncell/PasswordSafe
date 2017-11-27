@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.poturno.vitor.passwordsafe.activity.SignupActivity"
+    android:layout_margin="10dp">
+
+    <ImageView
+        android:id="@+id/btn_back"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_arrow_back"
+        android:tint="@color/colorPrimary" />
+
+    <EditText
+        android:id="@+id/edit_signup_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_back"
+        android:layout_marginTop="50dp"
+        android:ems="10"
+        android:hint="Digite seu nome"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/edit_signup_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edit_signup_name"
+        android:ems="10"
+        android:hint="Digite seu email"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:id="@+id/edit_signup_password0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edit_signup_email"
+        android:ems="10"
+        android:hint="Digite a senha"
+        android:inputType="textPassword" />
+
+    <EditText
+        android:id="@+id/edit_signup_password1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edit_signup_password0"
+        android:ems="10"
+        android:hint="Repita a senha"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/btn_signup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edit_signup_password1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:hint="Cadastrar"
+        android:text="Cadastrar"
+        android:textSize="15dp"
+        android:theme="@style/btnPattern" />
+
+</RelativeLayout>

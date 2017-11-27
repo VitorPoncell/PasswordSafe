@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.poturno.vitor.passwordsafe.activity.MainActivity"
+    android:layout_margin="10dp">
+
+    <ImageView
+        android:id="@+id/btn_back"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_arrow_back"
+        android:tint="@color/colorPrimary" />
+
+    <TextView
+        android:id="@+id/txt_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/btn_add_key"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Add key"
+        android:theme="@style/btnPattern" />
+
+    <ListView
+        android:id="@+id/list_key"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/btn_back"
+        android:layout_above="@id/btn_add_key"></ListView>
+
+</RelativeLayout>
