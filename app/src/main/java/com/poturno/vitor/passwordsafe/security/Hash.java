@@ -29,4 +29,8 @@ public class Hash {
         }
         return s.toString();
     }
+
+    public static String getAESKey(String hash){
+        return hash.substring(0, 16);
+    }
 }

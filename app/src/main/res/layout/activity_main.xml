@@ -20,15 +20,6 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true" />
 
-    <ImageView
-        android:id="@+id/btn_refresh"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:src="@drawable/ic_refresh"
-        android:tint="@color/colorPrimary" />
-
     <Button
         android:id="@+id/btn_add_key"
         android:layout_width="match_parent"

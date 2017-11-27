@@ -20,7 +20,7 @@
         android:layout_marginTop="50dp"
         android:ems="10"
         android:hint="Digite o token de recuperacao"
-        android:inputType="textPersonName" />
+        android:inputType="number" />
 
     <EditText
         android:id="@+id/edit_forgot_email"

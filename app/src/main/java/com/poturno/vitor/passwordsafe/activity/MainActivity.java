@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView name;
     private ListView listView;
     private ImageView back;
-    private ImageView refresh;
     private Button addKey;
     private ArrayAdapter adapter;
     private ArrayList<Key> keys;
@@ -47,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
         name = (TextView)findViewById(R.id.txt_name);
         listView = (ListView)findViewById(R.id.list_key);
         back = (ImageView)findViewById(R.id.btn_back);
-        refresh = (ImageView)findViewById(R.id.btn_refresh);
         addKey = (Button)findViewById(R.id.btn_add_key);
 
         Bundle bundle = getIntent().getExtras();
@@ -64,13 +62,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        refresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                refreshKeys();
-            }
-        });
-
         addKey.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,6 +74,12 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 String keyNameValue = keys.get(position).getKeyName();
                 String keyValueValue = keys.get(position).getKeyValue();
+                userKeys = new UserKeysController();
+                try {
+                    keyValueValue = userKeys.getKeyValue(keyValueValue,hash);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 AlertDialog.Builder aleBuilder = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialog);
                 aleBuilder.setTitle(keyNameValue+" -> "+keyValueValue);
                 aleBuilder.setCancelable(false);
@@ -187,12 +184,16 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this,"Preencha ambos os campos", Toast.LENGTH_LONG).show();
                 }else{
                     userKeys = new UserKeysController();
-                    userKeys.addKey(userId, keyNameValue, keyValueValue, new IEventListener() {
-                        @Override
-                        public void onComplete() {
-                            refreshKeys();
-                        }
-                    });
+                    try {
+                        userKeys.addKey(userId, keyNameValue, keyValueValue, hash, new IEventListener() {
+                            @Override
+                            public void onComplete() {
+                                refreshKeys();
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
