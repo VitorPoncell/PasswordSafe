@@ -97,6 +97,7 @@ public class AuthController {
 
                     recoverKeys(user,newUser);
                     newUser.setName(user.getName());
+                    newUser.setToken(Long.toString(Math.abs(new Random().nextLong())));
                     userDatabase.setUser(newUser);
                     showRecoverConfirm(newUser.getToken(),activity);
 
@@ -192,7 +193,7 @@ public class AuthController {
     private void showRecoverConfirm(String token, final Activity activity){
         AlertDialog.Builder aleBuilder = new AlertDialog.Builder(activity, R.style.AlertDialog);
         aleBuilder.setTitle("Recuperacao eralizada com sucesso");
-        aleBuilder.setMessage("Guarde seu token de recuperacao: " + token);
+        aleBuilder.setMessage("Guarde seu novo token de recuperacao: " + token);
         aleBuilder.setCancelable(false);
         aleBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
