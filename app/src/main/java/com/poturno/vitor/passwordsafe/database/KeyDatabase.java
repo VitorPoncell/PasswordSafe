@@ -46,10 +46,11 @@ public class KeyDatabase {
 
     }
 
-    public void setKey(String userId, String keyName, String keyValue, final IEventListener listener){
+    public void setKey(String userId, String keyName, String keyValue,String keyRsa, final IEventListener listener){
         key = new Key();
         key.setKeyName(keyName);
         key.setKeyValue(keyValue);
+        key.setSign(keyRsa);
         databaseReference = FirebaseConfig.getDatabaseReference().child("keys");
         databaseReference.child(userId).push().setValue(key).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

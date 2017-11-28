@@ -19,7 +19,11 @@ import com.poturno.vitor.passwordsafe.model.Key;
 import com.poturno.vitor.passwordsafe.model.User;
 import com.poturno.vitor.passwordsafe.security.AES;
 import com.poturno.vitor.passwordsafe.security.Hash;
+import com.poturno.vitor.passwordsafe.security.RSA;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -35,6 +39,7 @@ public class AuthController {
     private ArrayList<Key> keysArray;
     private ArrayList<String> keysValues;
     private AES aes;
+    private RSA rsa;
 
     public void authenticate(final String email, final String password, final Activity activity){
         userDatabase = new UserDatabase();
@@ -43,7 +48,7 @@ public class AuthController {
             public void onSucces(User user) {
                 logController = new LogController();
                 if(user!=null && user.getPassword().equals(password)){
-                    openMain(user.getId(),user.getName(),user.getPassword(),activity);
+                    openMain(user.getId(),user.getName(),user.getPassword(),user.getPubKey(), user.getPvtKey(),activity);
                     logController.loginSuccess(user.getId());
                 }else {
                     Toast.makeText(activity,"Email ou senha invalidos",Toast.LENGTH_LONG).show();
@@ -67,10 +72,13 @@ public class AuthController {
         userDatabase = new UserDatabase();
         userDatabase.getUser(newUser.getId(), new IUserListener() {
             @Override
-            public void onSucces(User user) {
+            public void onSucces(User user) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
                 logController = new LogController();
                 if(user==null){
                     newUser.setToken(Long.toString(Math.abs(new Random().nextLong())));
+                    KeyPair keyPair = rsa.generateKeyPar();
+                    newUser.setPubKey(Base64Custom.encodeBase64fromBytes(keyPair.getPublic().getEncoded()));
+                    newUser.setPvtKey(Base64Custom.encodeBase64fromBytes(keyPair.getPrivate().getEncoded()));
                     userDatabase.setUser(newUser);
                     logController.addUser(newUser.getId());
                     showToken(newUser.getToken(), activity);
@@ -91,14 +99,16 @@ public class AuthController {
         userDatabase = new UserDatabase();
         userDatabase.getUser(Base64Custom.encodeBase64(newUser.getEmail()), new IUserListener() {
             @Override
-            public void onSucces(User user) {
+            public void onSucces(User user) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException{
                 logController = new LogController();
                 if(user!=null && user.getToken().equals(newUser.getToken())){
 
-                    recoverKeys(user,newUser);
                     newUser.setName(user.getName());
                     newUser.setToken(Long.toString(Math.abs(new Random().nextLong())));
+                    newUser.setPubKey(user.getPubKey());
+                    newUser.setPvtKey(user.getPvtKey());
                     userDatabase.setUser(newUser);
+                    recoverKeys(user,newUser);
                     showRecoverConfirm(newUser.getToken(),activity);
 
                     logController.recoverSuccess(user.getId());
@@ -162,7 +172,7 @@ public class AuthController {
         for (int i = 0;i<keysArray.size();i++){
             try {
                 byte[] decryptedKeyValue = aes.decrypt(Base64Custom.decodeBase64toBytes(keysArray.get(i).getKeyValue()));
-                userKeysController.addKey(user.getId(), keysArray.get(i).getKeyName(),new String(decryptedKeyValue), newUser.getPassword(), new IEventListener() {
+                userKeysController.addKey(user.getId(), keysArray.get(i).getKeyName(),new String(decryptedKeyValue), newUser.getPassword(),rsa.getPvtKey(newUser.getPvtKey()), new IEventListener() {
                     @Override
                     public void onComplete() {
                     }
@@ -211,11 +221,13 @@ public class AuthController {
         activity.finish();
     }
 
-    private void openMain(String id,String name,String password,Activity activity){
+    private void openMain(String id, String name, String password, String pubKey,String pvtKey, Activity activity){
         Intent intent = new Intent(activity, MainActivity.class);
         intent.putExtra("id",id);
         intent.putExtra("name",name);
         intent.putExtra("hash",password);
+        intent.putExtra("pubKey",pubKey);
+        intent.putExtra("pvtKey",pvtKey);
         activity.startActivity(intent);
         activity.finish();
     }

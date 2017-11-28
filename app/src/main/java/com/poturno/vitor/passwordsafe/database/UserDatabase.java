@@ -12,6 +12,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.poturno.vitor.passwordsafe.model.User;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.NoSuchAlgorithmException;
+
 /**
  * Created by vitor on 18/11/2017.
  */
@@ -28,7 +31,13 @@ public class UserDatabase {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(User.class);
-                listener.onSucces(user);
+                try {
+                    listener.onSucces(user);
+                } catch (InvalidAlgorithmParameterException e) {
+                    e.printStackTrace();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override

@@ -8,6 +8,7 @@ public class Key {
 
     private String keyName;
     private String keyValue;
+    private String sign;
 
     public String getKeyName() {
         return keyName;
@@ -23,5 +24,13 @@ public class Key {
 
     public void setKeyValue(String keyValue) {
         this.keyValue = keyValue;
+    }
+
+    public String getSign() {
+        return sign;
+    }
+
+    public void setSign(String sign) {
+        this.sign = sign;
     }
 }

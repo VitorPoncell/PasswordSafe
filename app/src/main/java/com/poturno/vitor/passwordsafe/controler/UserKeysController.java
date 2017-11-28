@@ -6,6 +6,10 @@ import com.poturno.vitor.passwordsafe.database.KeyDatabase;
 import com.poturno.vitor.passwordsafe.helper.Base64Custom;
 import com.poturno.vitor.passwordsafe.security.AES;
 import com.poturno.vitor.passwordsafe.security.Hash;
+import com.poturno.vitor.passwordsafe.security.RSA;
+
+import java.security.PrivateKey;
+import java.security.PublicKey;
 
 
 /**
@@ -16,6 +20,7 @@ public class UserKeysController {
 
     private KeyDatabase keyDatabase;
     private LogController logController;
+    private RSA rsa;
 
     public void getKeys(String userId, IKeysListener listener){
         keyDatabase = new KeyDatabase();
@@ -23,7 +28,7 @@ public class UserKeysController {
 
     }
 
-    public void addKey(String userId, String keyName, String keyValue,String hash, IEventListener listener) throws Exception {
+    public void addKey(String userId, String keyName, String keyValue, String hash, PrivateKey pvtKey, IEventListener listener) throws Exception {
         keyDatabase = new KeyDatabase();
         logController = new LogController();
 
@@ -33,10 +38,13 @@ public class UserKeysController {
         AES aes = new AES(encryptionKey);
 
         byte[] cipherText = null;
+        byte[] sign=null;
 
         cipherText = aes.encrypt(plainText);
+        sign = rsa.encode(pvtKey,cipherText);
 
-        keyDatabase.setKey(userId,keyName, Base64Custom.encodeBase64fromBytes(cipherText),listener);
+
+        keyDatabase.setKey(userId,keyName, Base64Custom.encodeBase64fromBytes(cipherText),Base64Custom.encodeBase64fromBytes(sign),listener);
         logController.addKey(userId,keyName);
     }
 
@@ -47,10 +55,11 @@ public class UserKeysController {
         logController.removeKey(userId,keyName);
     }
 
-    public String getKeyValue(String keyValue,String hash) throws Exception {
+    public String getKeyValue(String keyValue, String hash) throws Exception {
         byte[] encryptionKey = Hash.getAESKey(hash).getBytes();
         AES aes = new AES(encryptionKey);
         return new String(aes.decrypt(Base64Custom.decodeBase64toBytes(keyValue)));
+
     }
 
 

@@ -24,7 +24,10 @@ import com.poturno.vitor.passwordsafe.controler.UserKeysController;
 import com.poturno.vitor.passwordsafe.database.IEventListener;
 import com.poturno.vitor.passwordsafe.database.IKeysListener;
 import com.poturno.vitor.passwordsafe.model.Key;
+import com.poturno.vitor.passwordsafe.security.RSA;
 
+import java.security.KeyFactory;
+import java.security.PrivateKey;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,7 +41,10 @@ public class MainActivity extends AppCompatActivity {
     private UserKeysController userKeys;
     private String userId;
     private String hash;
+    private String pubKey;
+    private String pvtKey;
     private LogController logController;
+    private RSA rsa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         name.setText(bundle.getString("name"));
         userId = bundle.getString("id");
         hash = bundle.getString("hash");
+        pubKey = bundle.getString("pubKey");
+        pvtKey = bundle.getString("pvtKey");
 
         refreshKeys();
 
@@ -76,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 String keyNameValue = keys.get(position).getKeyName();
                 String keyValueValue = keys.get(position).getKeyValue();
+                String keySign = keys.get(position).getSign();
                 userKeys = new UserKeysController();
                 try {
                     keyValueValue = userKeys.getKeyValue(keyValueValue,hash);
@@ -194,7 +203,8 @@ public class MainActivity extends AppCompatActivity {
                 }else{
                     userKeys = new UserKeysController();
                     try {
-                        userKeys.addKey(userId, keyNameValue, keyValueValue, hash, new IEventListener() {
+
+                        userKeys.addKey(userId, keyNameValue, keyValueValue, hash, rsa.getPvtKey(pvtKey), new IEventListener() {
                             @Override
                             public void onComplete() {
                                 refreshKeys();
